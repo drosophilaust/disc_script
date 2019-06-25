@@ -13,7 +13,7 @@
 mcc_calc <- function(object,bin) {
   
   library(DistMap)
-  #### Distmap
+  #### prepare rawdata and normalized data
   raw.data = as.matrix(object@raw.data) #raw.data
   normalized.data = as.matrix(object@data) #normlizrd data by seurat
   raw.data1 = as.data.frame(t(raw.data))
@@ -24,13 +24,13 @@ mcc_calc <- function(object,bin) {
   raw.data1 = as.matrix(t(raw.data1))
   normalized.data1 = as.matrix(t(normalized.data1))
   
-  ##
+  ## 
   gene <- colnames(bin)
   gene <- intersect(gene,rownames(raw.data1))
   bin = bin[,gene]
   quant <- bin[4,]
   
-  ##
+  ## binary data with thresholds in bin
   binary.dt <- as.data.frame(matrix(nrow = ncol(object@data),ncol = ncol(bin)))
   
   for (i in 1:length(gene)) {
@@ -57,6 +57,7 @@ mcc_calc <- function(object,bin) {
   binary.dt1 <- binary.dt1[intersect(rownames(binary.dt1),colnames(dm@data)),]
   binary.dt1 <- t(binary.dt1)
   
+  # replace auto binarized data with our manual binarized data
   dm@binarized.data <- binary.dt1
   
   dm <- mapCells(dm)
